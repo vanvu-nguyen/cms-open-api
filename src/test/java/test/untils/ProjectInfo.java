@@ -22,7 +22,9 @@ public class ProjectInfo extends RequestCapability {
 
     public String getIssueTypeId(String issueType) {
         Map<String, List<Map<String, String>>> responseParam = JsonPath.from(getProjectInfo().asString()).get();
+        System.out.println(responseParam);
         List<Map<String, String>> issueTypes = responseParam.get("issueTypes");
+        System.out.println(issueTypes);
         String projectId = null;
         for (Map<String, String> issue: issueTypes) {
             if (issue.get("name").equalsIgnoreCase(issueType)) {
@@ -46,6 +48,9 @@ public class ProjectInfo extends RequestCapability {
         request.header(RequestCapability.getAuthentication(encodedCredString));
         request.header(ACCEPT_JSON_HEADER);
 
+        /*Response response = request.get();
+        response.prettyPrint();
+        return response;*/
         return request.get();
     }
 
