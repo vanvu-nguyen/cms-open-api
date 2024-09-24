@@ -1,4 +1,4 @@
-package test.Builder;
+package Builder;
 
 import com.google.gson.Gson;
 

@@ -1,4 +1,4 @@
-package test.test;
+package Commons;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.DecodedJWT;
@@ -11,9 +11,9 @@ import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.BeforeTest;
-import test.BodyModal.Login;
-import test.modal.RequestCapability;
-import test.untils.AuthenticationHandler;
+import BodyModal.Login;
+import modal.RequestCapability;
+import untils.AuthenticationHandler;
 
 import java.time.Instant;
 import java.time.LocalDateTime;

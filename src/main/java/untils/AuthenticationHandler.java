@@ -1,4 +1,4 @@
-package test.untils;
+package untils;
 
 import org.apache.commons.codec.binary.Base64;
 

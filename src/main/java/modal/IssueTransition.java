@@ -1,4 +1,4 @@
-package test.modal;
+package modal;
 
 public class IssueTransition {
 

@@ -1,7 +1,7 @@
-package test.test;
+package test;
 
 import com.google.gson.Gson;
-import test.BodyModal.LoginReqBody;
+import BodyModal.LoginReqBody;
 
 public class OpenApiTesting {
     public static void main(String[] args) {

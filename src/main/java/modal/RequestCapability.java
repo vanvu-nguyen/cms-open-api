@@ -1,4 +1,4 @@
-package test.modal;
+package modal;
 
 import io.restassured.http.Header;
 

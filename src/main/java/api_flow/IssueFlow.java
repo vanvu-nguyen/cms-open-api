@@ -1,14 +1,14 @@
-package test.api_flow;
+package api_flow;
 
+import Builder.IssueContentBuilder;
 import com.github.javafaker.Faker;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
-import test.Builder.BodyJSONBuilder;
-import test.Builder.IssueContentBuilder;
-import test.modal.IssueFields;
-import test.modal.IssueTransition;
-import test.untils.ProjectInfo;
+import modal.IssueTransition;
+import Builder.BodyJSONBuilder;
+import modal.IssueFields;
+import untils.ProjectInfo;
 
 import java.util.HashMap;
 import java.util.List;

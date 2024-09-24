@@ -1,4 +1,4 @@
-package test.BodyModal;
+package BodyModal;
 
 public class User_Insert {
 

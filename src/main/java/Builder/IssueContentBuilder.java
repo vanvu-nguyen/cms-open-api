@@ -1,6 +1,6 @@
-package test.Builder;
+package Builder;
 
-import test.modal.IssueFields;
+import modal.IssueFields;
 
 public class IssueContentBuilder {
     private IssueFields issueFields;
