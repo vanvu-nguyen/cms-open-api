@@ -13,6 +13,5 @@ public class RequestCapability {
         return new Header("Authorization", "Basic ".concat(encodedCredString));
     }
 
-
-
+    
 }

@@ -3,7 +3,7 @@
 <suite name="Suite1">
     <test name="Jira - Issue E2E" >
         <classes>
-            <class name="test.test.JiraIssueCRUD" />
+            <class name="test.test.testClass" />
         </classes>
     </test>
 </suite>
