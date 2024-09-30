@@ -13,16 +13,22 @@ import io.restassured.http.Header;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
+import jdbcTest.MariaDBConnUtils;
 import org.bouncycastle.openpgp.PGPException;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Locale;
 import java.util.Map;
 
 import static io.restassured.RestAssured.given;
 
-public class Login {
+public class CreatePayerScenario {
 
     private LoginModule loginModule = ModuleGenerator.getLoginModule();
     private PayerModule payerModule = ModuleGenerator.getPayerModule();
@@ -35,28 +41,12 @@ public class Login {
     private String accessToken;
     private String refreshIdx;
     private Faker faker = new Faker(new Locale("EN-en"));
+    private String payer1Phone;
+    private String payer1Name;
+    private String payer1Number;
 
     @Test
     public void TC_01_EncryptLoginBody() throws Exception {
-
-        System.out.println("==========TC_01_EncryptLoginBody");
-
-
-
-        /*JSONObject parent = new JSONObject();
-        JSONObject child = new JSONObject();
-        child.put("masterId", "huytest");
-        child.put("clientId", "17e8ffee6a261042f6eb26f51ce89d10");
-        parent.put("data", child);
-        System.out.println("loginBody: " + parent);
-
-        String jsonString = parent.toString();
-        Gson gson = new Gson();
-        CreatePayer createPayer = gson.fromJson(jsonString, CreatePayer.class);
-
-        loginJSONBodyEncryptedStr = loginModule.getEncryptData(createPayer, KeyContainer.PUBLIC_KEY);*/
-
-
         loginJSONBody = loginModule.getLoginJSONBody();
         System.out.println(new Gson().toJson(loginJSONBody));
         loginJSONBodyEncryptedStr = loginModule.getEncryptData(loginJSONBody, KeyContainer.PUBLIC_KEY);
@@ -67,9 +57,6 @@ public class Login {
 
     @Test
     public void TC_02_GetAccessToken() throws Exception {
-
-        System.out.println("==========TC_02_GetAccessToken");
-
         RequestSpecification request = given();
         hmacSignature = AuthUtils.getAuthHeader();
         request = loginModule.getReqHd(request);
@@ -90,51 +77,14 @@ public class Login {
 
     @Test
     public void TC_03_CreatePayer() throws PGPException, IOException {
-
-        /*System.out.println("==========TC_03_CreatePayer");
-
-        JSONObject createPayerReqBody = new JSONObject();
-        JSONArray createPayerReqBodyData = new JSONArray();
-        JSONObject createPayerReqBodyInfo1 = new JSONObject();
-        JSONObject createPayerReqBodyInfo2 = new JSONObject();
-
-        createPayerReqBodyInfo1.put("payerNo", "");
-        createPayerReqBodyInfo1.put("payerName", String.valueOf(faker.team().name()));
-        createPayerReqBodyInfo1.put("phoneNo", "03" + faker.number().randomNumber(8, true));
-        createPayerReqBodyInfo1.put("email", "");
-        createPayerReqBodyInfo1.put("remark", "vk marked");
-        createPayerReqBodyInfo1.put("smsUseYn", "Y");
-        createPayerReqBodyInfo1.put("zaloUseYn", "N");
-
-        createPayerReqBodyInfo2.put("payerNo", "");
-        createPayerReqBodyInfo2.put("payerName", String.valueOf(faker.team().name()));
-        createPayerReqBodyInfo2.put("phoneNo", "03" + faker.number().randomNumber(8, true));
-        createPayerReqBodyInfo2.put("email", "");
-        createPayerReqBodyInfo2.put("remark", "vk marked");
-        createPayerReqBodyInfo2.put("smsUseYn", "Y");
-        createPayerReqBodyInfo2.put("zaloUseYn", "N");
-
-        createPayerReqBodyData.put(createPayerReqBodyInfo1);
-        createPayerReqBodyData.put(createPayerReqBodyInfo2);
-
-        createPayerReqBody.put("data", createPayerReqBodyData);
-
-        String reqBody = createPayerReqBody.toString();
-        System.out.println(reqBody);*/
-
         CreatePayerReq createPayerReq = new CreatePayerReq();
         CreatePayerReq.Payer payer1 = new CreatePayerReq.Payer("", String.valueOf(faker.team().name()), "03" + faker.number().randomNumber(8, true), "Y", "Y", "", "vk remark");
         CreatePayerReq.Payer payer2 = new CreatePayerReq.Payer("", String.valueOf(faker.team().name()), "03" + faker.number().randomNumber(8, true), "Y", "Y", "", "vk remark");
         createPayerReq.data.add(payer1);
         createPayerReq.data.add(payer2);
-
         System.out.println(new Gson().toJson(createPayerReq));
-
-
         String encryptedData = payerModule.getEncryptData(createPayerReq, KeyContainer.PUBLIC_KEY);
-
         CommonModal commonModal = new CommonModal(encryptedData);
-
         RequestSpecification request = given();
         request.baseUri(RequestCapability.BASE_URL);
         request.basePath("/ocms/v1/payer/create_payer");
@@ -142,11 +92,74 @@ public class Login {
         request.header("Content-Type", "application/json; charset=UTF-8");
         request.header("AuthorizationHeaderParameters", "MTdlOGZmZWU2YTI2MTA0MmY2ZWIyNmY1MWNlODlkMTA=");
         request.header("bankCode", "01202001");
+        Response response1 = request.body(commonModal).post();
+        response1.prettyPrint();
+        payer1Phone = payer1.getPhoneNo();
+        payer1Name = payer1.getPayerName();
+    }
+
+    @Test
+    public void TC_04_VerifyDatabase() throws SQLException {
+        Connection connection = MariaDBConnUtils.getMariaDBConnection();
+        String queryingString = "SELECT * FROM TB_PAYER WHERE TEL_NO = ?";
+        PreparedStatement pstm = connection.prepareStatement(queryingString);
+        pstm.setString(1, payer1Phone);
+        ResultSet resultSet = pstm.executeQuery();
+        while (resultSet.next()) {
+            System.out.println("--------------------");
+            System.out.println("Expected payer name: " + payer1Name);
+            System.out.println("Actual payer name from DB: " + resultSet.getString("PAYER_NM"));
+            Assert.assertEquals(payer1Name, resultSet.getString("PAYER_NM"));
+            payer1Number = resultSet.getString("PAYER_NO");
+        }
+
+    }
+
+    @Test
+    public void TC_05_CreateEccThenMapToPayer() throws PGPException, IOException {
+        RequestSpecification request = given();
+        request.baseUri(RequestCapability.BASE_URL);
+        request.basePath("/ocms/v2/ec/create_eccode");
+        request.header("token", accessToken);
+        request.header("Content-Type", "application/json; charset=UTF-8");
+        request.header("AuthorizationHeaderParameters", "MTdlOGZmZWU2YTI2MTA0MmY2ZWIyNmY1MWNlODlkMTA=");
+        request.header("bankCode", "01202001");
+
+        CreateEccMapPayerReq createEccMapPayerReq = new CreateEccMapPayerReq();
+        CreateEccMapPayerReq.PayerEccPair pair1 = new CreateEccMapPayerReq.PayerEccPair(payer1Number, "7834444422344", "vk holder name");
+        createEccMapPayerReq.data.add(pair1);
+
+        String encryptedData = payerModule.getEncryptData(createEccMapPayerReq, KeyContainer.PUBLIC_KEY);
+        CommonModal commonModal = new CommonModal(encryptedData);
 
         Response response1 = request.body(commonModal).post();
-
         response1.prettyPrint();
 
+
+    }
+
+    @Test
+    public void TC_06_CreateReceivable() {
+        RequestSpecification request = given();
+        request.baseUri(RequestCapability.BASE_URL);
+        request.basePath("/ocms/v2/ec/create_eccode_recv");
+        request.header("token", accessToken);
+        request.header("Content-Type", "application/json; charset=UTF-8");
+        request.header("AuthorizationHeaderParameters", "MTdlOGZmZWU2YTI2MTA0MmY2ZWIyNmY1MWNlODlkMTA=");
+        request.header("bankCode", "01202001");
+
+        CreateReceivableReq createReceivableReq = new CreateReceivableReq();
+        CreateReceivableReq.Receivable receivable1 = new CreateReceivableReq.Receivable("7834444422344", payer1Number, )
+
+        CreateEccMapPayerReq createEccMapPayerReq = new CreateEccMapPayerReq();
+        CreateEccMapPayerReq.PayerEccPair pair1 = new CreateEccMapPayerReq.PayerEccPair(payer1Number, "7834444422344", "vk holder name");
+        createEccMapPayerReq.data.add(pair1);
+
+        String encryptedData = payerModule.getEncryptData(createEccMapPayerReq, KeyContainer.PUBLIC_KEY);
+        CommonModal commonModal = new CommonModal(encryptedData);
+
+        Response response1 = request.body(commonModal).post();
+        response1.prettyPrint();
     }
 
 }

@@ -3,7 +3,7 @@
 <suite name="Suite1">
     <test name="CMS-OPEN-API" >
         <classes>
-            <class name="test.Login" />
+            <class name="test.CreatePayerScenario" />
         </classes>
     </test>
 </suite>

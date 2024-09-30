@@ -1,5 +1,8 @@
 package RequestBodyModal;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,8 +15,13 @@ public class CreatePayerReq {
     }
 
     public static class Payer {
+
         public String payerNo;
+
+        @Setter @Getter
         public String payerName;
+
+        @Setter @Getter
         public String phoneNo;
         public String smsUseYn;
         public String zaloUseYn;
