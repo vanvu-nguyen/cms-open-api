@@ -28,7 +28,6 @@ public class Login {
     private PayerModule payerModule = ModuleGenerator.getPayerModule();
     private LoginReq loginJSONBody;
     private String loginJSONBodyEncryptedStr;
-    /*private RequestSpecification request = given();*/
     private Response response;
     private LoginReqEncrypt loginReqEncrypt;
     private String finalBody;
@@ -135,14 +134,6 @@ public class Login {
         String encryptedData = payerModule.getEncryptData(createPayerReq, KeyContainer.PUBLIC_KEY);
 
         CommonModal commonModal = new CommonModal(encryptedData);
-
-        /*JSONObject encryptedBody = new JSONObject();
-        encryptedBody.put("data", encryptedData);
-
-        String reqBody1 = encryptedBody.toString();
-        System.out.println(reqBody1);*/
-
-
 
         RequestSpecification request = given();
         request.baseUri(RequestCapability.BASE_URL);
