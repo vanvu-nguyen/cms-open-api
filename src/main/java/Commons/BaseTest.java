@@ -1,16 +1,52 @@
 package Commons;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import PGPHandler.IPlusJsonParser;
+import PGPHandler.PgpDecryptionUtil;
+import PGPHandler.PgpEncryptionUtil;
+import org.bouncycastle.bcpg.CompressionAlgorithmTags;
+import org.bouncycastle.bcpg.SymmetricKeyAlgorithmTags;
+import org.bouncycastle.openpgp.PGPException;
+import org.jose4j.base64url.Base64;
 
-import java.time.LocalDateTime;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 public class BaseTest extends RequestCapability {
 
-    protected String accessToken;
-    protected int refreshIdx;
-    protected LocalDateTime expDateTime;
 
-    protected void getAccessToken() throws JsonProcessingException {
+    // FOR DATA ENCRYPTION
+    public static <T> String getEncryptData(T data, String publicKey) throws PGPException, IOException {
+        String bodyOpenPGP = IPlusJsonParser.getJsonStringFromObject(data);
+        if(bodyOpenPGP == null) {
+            return null;
+        }
+        PgpEncryptionUtil pgpEncryptionUtil = PgpEncryptionUtil.builder()
+                .armor(true)
+                .compressionAlgorithm(CompressionAlgorithmTags.ZIP)
+                .symmetricKeyAlgorithm(SymmetricKeyAlgorithmTags.AES_128)
+                .withIntegrityCheck(true)
+                .build();
+        return Base64.encode(pgpEncryptionUtil.encrypt(bodyOpenPGP.getBytes(StandardCharsets.UTF_8), publicKey)); // maybe error occur here
+    }
+
+    // FOR DATA DECRYPTION
+    public static <T> T getBodyDecrypt(String privateKey, String passCode, String encrypted, Class<T> clazz) throws PGPException, IOException {
+        PgpDecryptionUtil pgpDecryptionUtil = new PgpDecryptionUtil(privateKey, passCode);
+        return IPlusJsonParser.getObjectFromByteArray(pgpDecryptionUtil.decrypt(Base64.decode(encrypted)), clazz);
+    }
+
+
+
+
+
+
+
+
+
+    //protected String accessToken;
+    //protected int refreshIdx;
+    //protected LocalDateTime expDateTime;
+//    protected void getAccessToken() throws JsonProcessingException {
 //        RequestSpecification request = given();
 //        request.baseUri("https://api-gw.infocms.com.vn/infocms/bidv/external-api/v1.0");
 //        request.basePath("/ocms/v2/auth/login");
@@ -39,9 +75,11 @@ public class BaseTest extends RequestCapability {
 //
 //        this.expDateTime = LocalDateTime.ofInstant(Instant.ofEpochSecond(expiredTimeStamp), ZoneId.systemDefault());
 //        System.out.println(expDateTime);
-
+//
 //        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 //        String formattedDate = dateTime.format(formatter);
 //        System.out.println("Formatted date: " + formattedDate);
-    }
+//    }
+
+
 }

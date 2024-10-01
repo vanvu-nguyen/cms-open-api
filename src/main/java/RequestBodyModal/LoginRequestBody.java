@@ -1,11 +1,10 @@
 package RequestBodyModal;
 
-public class LoginReq {
+public class LoginRequestBody {
 
     public Data data;
-
-    public LoginReq(String masterId, String clientId) {
-        this.data = new Data(masterId, clientId);
+    public LoginRequestBody() {
+        this.data = new Data("huytest", "17e8ffee6a261042f6eb26f51ce89d10");
     }
 
     public class Data {
