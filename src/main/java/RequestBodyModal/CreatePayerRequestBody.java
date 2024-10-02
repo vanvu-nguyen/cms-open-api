@@ -17,11 +17,9 @@ public class CreatePayerRequestBody {
 
     public class Data {
 
-        Faker faker = new Faker(new Locale("en_US"));
-
         public String payerNo = "";
-        public String payerName = String.valueOf(faker.team().name());
-        public String phoneNo = "03" + faker.number().randomNumber(8, true);
+        public String payerName = String.valueOf(new Faker(new Locale("en_US")).team().name());
+        public String phoneNo = "03" + new Faker(new Locale("en_US")).number().randomNumber(8, true);
         public String smsUseYn = "Y";
         public String zaloUseYn = "Y";
         public String email = "";

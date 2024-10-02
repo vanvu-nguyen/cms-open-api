@@ -7,9 +7,11 @@ import RequestBodyModal.CreateEcReceivableRequestBody;
 import RequestBodyModal.CreateEccRequestBody;
 import RequestBodyModal.CreatePayerRequestBody;
 import RequestBodyModal.LoginRequestBody;
+import ResponseBodyModal.CreateEcReceivableResponsebody;
 import ResponseBodyModal.CreateEccResponseBody;
 import ResponseBodyModal.CreatePayerResponseBody;
 import ResponseBodyModal.LoginResponseBody;
+import com.google.gson.Gson;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import jdbcTest.MariaDBConnUtils;
@@ -42,14 +44,6 @@ public class CreateReceivableScenario extends BaseTest {
         LoginRequestBody loginRequestBody = RequestBodyGenerator.getLoginRequestBody();
         String encryptedLoginBody = BaseTest.getEncryptData(loginRequestBody, KeyContainer.PUBLIC_KEY);
         finalRequestBody = RequestBodyGenerator.getFinalRequestBody(encryptedLoginBody);
-
-        /*loginReqBody = RequestBodyGenerator.getLoginReqBody();
-        System.out.println(new Gson().toJson(loginReqBody));
-        String encryptedLoginBody = BaseTest.getEncryptData(loginReqBody, KeyContainer.PUBLIC_KEY);
-        loginReqEncrypt = new LoginReqEncrypt(loginJSONBodyEncryptedStr);
-        finalRequestBody = new Gson().toJson(loginReqEncrypt);
-        System.out.println(finalRequestBody);*/
-
     }
 
     @Test
@@ -61,28 +55,14 @@ public class CreateReceivableScenario extends BaseTest {
         LoginResponseBody loginResponseBody = BaseTest.getBodyDecrypt(KeyContainer.PRIVATE_KEY, KeyContainer.PASS_CODE, originalDataValue, LoginResponseBody.class);
         accessToken = loginResponseBody.accessToken;
         refreshIdx = loginResponseBody.refreshIdx;
-
-        /*RequestSpecification request = given();
-        hmacSignature = AuthUtils.getAuthHeader();
-        request = loginModule.getReqHd(request);
-        request.header(new Header("Authorization", hmacSignature));
-        response = loginModule.getAccessToken(request, finalRequestBody);
-        response.prettyPrint();
-        Map<String, String> loginRespFirstLevelKey = JsonPath.from(response.asString()).get();
-        String encryptedLoginRespBody = loginRespFirstLevelKey.get("data");
-        System.out.println(encryptedLoginRespBody);
-        LoginRespDecrypt loginRespDecrypt = BaseTest.getBodyDecrypt(KeyContainer.PRIVATE_KEY, KeyContainer.PASS_CODE, encryptedLoginRespBody, LoginRespDecrypt.class);
-        String decryptLoginRespBody = new Gson().toJson(loginRespDecrypt);
-        System.out.println(decryptLoginRespBody);
-        System.out.println(loginRespDecrypt.accessToken);
-        System.out.println(loginRespDecrypt.refreshIdx);
-        accessToken = loginRespDecrypt.accessToken;
-        refreshIdx = loginRespDecrypt.refreshIdx;*/
     }
 
     @Test
     public void TC_03_CreatePayer() throws PGPException, IOException {
         CreatePayerRequestBody createPayerRequestBody = RequestBodyGenerator.getCreatePayerRequestBody();
+
+        System.out.println("Create Payer Request: " + new Gson().toJson(createPayerRequestBody));
+
         String encryptedCreatePayerBody = BaseTest.getEncryptData(createPayerRequestBody, KeyContainer.PUBLIC_KEY);
         finalRequestBody = RequestBodyGenerator.getFinalRequestBody(encryptedCreatePayerBody);
         request = RequestHeaderGenerator.getCustomRequestHeader(BasePathList.CREATE_PAYER, accessToken);
@@ -93,25 +73,16 @@ public class CreateReceivableScenario extends BaseTest {
         payerName = createPayerResponseBody.succList.get(0).payerName;
         payerPhoneNo = createPayerResponseBody.succList.get(0).phoneNo;
 
-        /*CreatePayerReq createPayerReq = new CreatePayerReq();
-        CreatePayerReq.Payer payer1 = new CreatePayerReq.Payer("", String.valueOf(faker.team().name()), "03" + faker.number().randomNumber(8, true), "Y", "Y", "", "vk remark");
-        CreatePayerReq.Payer payer2 = new CreatePayerReq.Payer("", String.valueOf(faker.team().name()), "03" + faker.number().randomNumber(8, true), "Y", "Y", "", "vk remark");
-        createPayerReq.data.add(payer1);
-        createPayerReq.data.add(payer2);
-        System.out.println(new Gson().toJson(createPayerReq));
-        String encryptedData = BaseTest.getEncryptData(createPayerReq, KeyContainer.PUBLIC_KEY);
-        FinalRequestBody commonModal = new FinalRequestBody(encryptedData);
-        RequestSpecification request = given();
-        request.baseUri(RequestCapability.BASE_URL);
-        request.basePath("/ocms/v1/payer/create_payer");
-        request.header("token", accessToken);
-        request.header("Content-Type", "application/json; charset=UTF-8");
-        request.header("AuthorizationHeaderParameters", "MTdlOGZmZWU2YTI2MTA0MmY2ZWIyNmY1MWNlODlkMTA=");
-        request.header("bankCode", "01202001");
-        Response response1 = request.body(commonModal).post();
-        response1.prettyPrint();
-        payer1Phone = payer1.getPhoneNo();
-        payer1Name = payer1.getPayerName();*/
+        System.out.println("Create Payer Response: " + new Gson().toJson(createPayerResponseBody));
+
+        String expectedPayerName = createPayerRequestBody.data.get(0).payerName;
+        String expectedPhoneNo = createPayerRequestBody.data.get(0).phoneNo;
+
+        String actualPayerName = createPayerResponseBody.succList.get(0).payerName;
+        String actualPhoneNo = createPayerResponseBody.succList.get(0).phoneNo;
+
+        Assert.assertEquals(expectedPayerName, actualPayerName);
+        Assert.assertEquals(expectedPhoneNo, actualPhoneNo);
     }
 
     @Test
@@ -131,6 +102,9 @@ public class CreateReceivableScenario extends BaseTest {
     public void TC_05_CreateEccThenMapToPayer() throws PGPException, IOException {
         request = RequestHeaderGenerator.getCustomRequestHeader(BasePathList.CREATE_ECC, accessToken);
         CreateEccRequestBody createEccRequestBody = RequestBodyGenerator.getCreateEccRequestBody(payerNo);
+
+        System.out.println("Create Ecc Request: " + new Gson().toJson(createEccRequestBody));
+
         String encryptedCreateEccBody = BaseTest.getEncryptData(createEccRequestBody, KeyContainer.PUBLIC_KEY);
         finalRequestBody = RequestBodyGenerator.getFinalRequestBody(encryptedCreateEccBody);
         response = request.body(finalRequestBody).post();
@@ -139,60 +113,34 @@ public class CreateReceivableScenario extends BaseTest {
         CreateEccResponseBody createEccResponseBody = BaseTest.getBodyDecrypt(KeyContainer.PRIVATE_KEY, KeyContainer.PASS_CODE, originalDataValue, CreateEccResponseBody.class);
         ecc = createEccResponseBody.succList.get(0).ecollectionCd;
 
-        /*RequestSpecification request = given();
-        request.baseUri(RequestCapability.BASE_URL);
-        request.basePath("/ocms/v2/ec/create_eccode");
-        request.header("token", accessToken);
-        request.header("Content-Type", "application/json; charset=UTF-8");
-        request.header("AuthorizationHeaderParameters", "MTdlOGZmZWU2YTI2MTA0MmY2ZWIyNmY1MWNlODlkMTA=");
-        request.header("bankCode", "01202001");
+        System.out.println("Create Ecc Response: " + new Gson().toJson(createEccResponseBody));
 
-        CreateEccMapPayerReq createEccMapPayerReq = new CreateEccMapPayerReq();
-        CreateEccMapPayerReq.PayerEccPair pair1 = new CreateEccMapPayerReq.PayerEccPair(payerNo, "7834444422344", "vk holder name");
-        createEccMapPayerReq.data.add(pair1);
+        String expectedPayerNo = createEccRequestBody.data.get(0).payerNo;
+        String actualPayerNo = createEccResponseBody.succList.get(0).payerNo;
 
-        String encryptedData = BaseTest.getEncryptData(createEccMapPayerReq, KeyContainer.PUBLIC_KEY);
-        FinalRequestBody commonModal = new FinalRequestBody(encryptedData);
-
-        Response response1 = request.body(commonModal).post();
-        response1.prettyPrint();
-
-        Map<String, String> createPayerRespFirstLevelKey = JsonPath.from(response1.asString()).get();
-        String encryptedLoginRespBody = createPayerRespFirstLevelKey.get("data");
-
-        CreateEccMapPayerResp createEccMapPayerResp = BaseTest.getBodyDecrypt(KeyContainer.PRIVATE_KEY, KeyContainer.PASS_CODE, encryptedLoginRespBody, CreateEccMapPayerResp.class);
-        String decryptCreatePayerRespBody = new Gson().toJson(createEccMapPayerResp);
-        System.out.println(decryptCreatePayerRespBody);
-        ecc = createEccMapPayerResp.succList.get(0).ecollectionCd;
-
-        System.out.println(ecc);*/
+        Assert.assertEquals(expectedPayerNo, actualPayerNo);
     }
 
     @Test
     public void TC_06_CreateReceivable() throws PGPException, IOException {
         request = RequestHeaderGenerator.getCustomRequestHeader(BasePathList.CREATE_RECEIVABLE, accessToken);
         CreateEcReceivableRequestBody createEcReceivableRequest = RequestBodyGenerator.getCreateEcReceivableRequest(payerNo, ecc);
+
+        System.out.println("Create Ec Receivable Request: " + new Gson().toJson(createEcReceivableRequest));
+
         String encryptedCreateEcReceivableBody = BaseTest.getEncryptData(createEcReceivableRequest, KeyContainer.PUBLIC_KEY);
         finalRequestBody = RequestBodyGenerator.getFinalRequestBody(encryptedCreateEcReceivableBody);
         response = request.body(finalRequestBody).post();
+        originalResponseBody = response.as(OriginalResponseBody.class);
+        originalDataValue = originalResponseBody.data;
+        CreateEcReceivableResponsebody createEcReceivableResponsebody = BaseTest.getBodyDecrypt(KeyContainer.PRIVATE_KEY, KeyContainer.PASS_CODE, originalDataValue, CreateEcReceivableResponsebody.class);
 
-        /*RequestSpecification request = given();
-        request.baseUri(RequestCapability.BASE_URL);
-        request.basePath("/ocms/v2/ec/create_eccode_recv");
-        request.header("token", accessToken);
-        request.header("Content-Type", "application/json; charset=UTF-8");
-        request.header("AuthorizationHeaderParameters", "MTdlOGZmZWU2YTI2MTA0MmY2ZWIyNmY1MWNlODlkMTA=");
-        request.header("bankCode", "01202001");
+        System.out.println("Create Ec Receivable Response: " + new Gson().toJson(createEcReceivableResponsebody));
 
-        CreateReceivableReq createReceivableReq = new CreateReceivableReq();
-        CreateReceivableReq.Receivable receivable1 = new CreateReceivableReq.Receivable("7834444422344", payerNo, ecc, "","0",200000, "20241205", "20241207", "", "", "0");
-        createReceivableReq.data.add(receivable1);
+        String expectedEcc = createEcReceivableRequest.data.get(0).ecollectionCd;
+        String actualEcc = createEcReceivableResponsebody.succList.get(0).ecollectionCd;
 
-        String encryptedData = BaseTest.getEncryptData(createReceivableReq, KeyContainer.PUBLIC_KEY);
-        FinalRequestBody commonModal = new FinalRequestBody(encryptedData);
-
-        Response response1 = request.body(commonModal).post();
-        response1.prettyPrint();*/
+        Assert.assertEquals(expectedEcc, actualEcc);
     }
 
 }
