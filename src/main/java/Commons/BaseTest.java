@@ -1,6 +1,7 @@
 package Commons;
 
 import PGPHandler.IPlusJsonParser;
+import PGPHandler.KeyContainer;
 import PGPHandler.PgpDecryptionUtil;
 import PGPHandler.PgpEncryptionUtil;
 import org.bouncycastle.bcpg.CompressionAlgorithmTags;
@@ -15,7 +16,8 @@ public class BaseTest extends RequestCapability {
 
 
     // FOR DATA ENCRYPTION
-    public static <T> String getEncryptData(T data, String publicKey) throws PGPException, IOException {
+    public static <T> FinalRequestBody getEncryptData(T data) throws PGPException, IOException {
+        String publicKey = KeyContainer.PUBLIC_KEY;
         String bodyOpenPGP = IPlusJsonParser.getJsonStringFromObject(data);
         if(bodyOpenPGP == null) {
             return null;
@@ -26,7 +28,9 @@ public class BaseTest extends RequestCapability {
                 .symmetricKeyAlgorithm(SymmetricKeyAlgorithmTags.AES_128)
                 .withIntegrityCheck(true)
                 .build();
-        return Base64.encode(pgpEncryptionUtil.encrypt(bodyOpenPGP.getBytes(StandardCharsets.UTF_8), publicKey)); // maybe error occur here
+        //return Base64.encode(pgpEncryptionUtil.encrypt(bodyOpenPGP.getBytes(StandardCharsets.UTF_8), publicKey));
+        SampleData.encryptedBody = Base64.encode(pgpEncryptionUtil.encrypt(bodyOpenPGP.getBytes(StandardCharsets.UTF_8), publicKey));
+        return RequestBodyGenerator.getFinalRequestBody();
     }
 
     // FOR DATA DECRYPTION

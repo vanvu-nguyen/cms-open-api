@@ -37,21 +37,18 @@ public class CreateReceivableScenario extends BaseTest {
     private String payerPhoneNo;
     private String payerName;
     private String payerNo;
-    private String ecc;
 
     @Test
     public void TC_01_EncryptLoginBody() throws Exception {
         LoginRequestBody loginRequestBody = RequestBodyGenerator.getLoginRequestBody();
-        String encryptedLoginBody = BaseTest.getEncryptData(loginRequestBody, KeyContainer.PUBLIC_KEY);
-        finalRequestBody = RequestBodyGenerator.getFinalRequestBody(encryptedLoginBody);
+        finalRequestBody = BaseTest.getEncryptData(loginRequestBody);
     }
 
     @Test
     public void TC_02_LogIn() throws Exception {
         request = RequestHeaderGenerator.getLoginRequestHeader();
         response = request.body(finalRequestBody).post();
-        originalResponseBody = response.as(OriginalResponseBody.class);
-        originalDataValue = originalResponseBody.data;
+        originalDataValue = response.as(OriginalResponseBody.class).data;
         LoginResponseBody loginResponseBody = BaseTest.getBodyDecrypt(KeyContainer.PRIVATE_KEY, KeyContainer.PASS_CODE, originalDataValue, LoginResponseBody.class);
         accessToken = loginResponseBody.accessToken;
         refreshIdx = loginResponseBody.refreshIdx;
@@ -63,8 +60,7 @@ public class CreateReceivableScenario extends BaseTest {
 
         System.out.println("Create Payer Request: " + new Gson().toJson(createPayerRequestBody));
 
-        String encryptedCreatePayerBody = BaseTest.getEncryptData(createPayerRequestBody, KeyContainer.PUBLIC_KEY);
-        finalRequestBody = RequestBodyGenerator.getFinalRequestBody(encryptedCreatePayerBody);
+        finalRequestBody = BaseTest.getEncryptData(createPayerRequestBody);
         request = RequestHeaderGenerator.getCustomRequestHeader(BasePathList.CREATE_PAYER, accessToken);
         response = request.body(finalRequestBody).post();
         originalResponseBody = response.as(OriginalResponseBody.class);
@@ -105,13 +101,13 @@ public class CreateReceivableScenario extends BaseTest {
 
         System.out.println("Create Ecc Request: " + new Gson().toJson(createEccRequestBody));
 
-        String encryptedCreateEccBody = BaseTest.getEncryptData(createEccRequestBody, KeyContainer.PUBLIC_KEY);
-        finalRequestBody = RequestBodyGenerator.getFinalRequestBody(encryptedCreateEccBody);
+        finalRequestBody = BaseTest.getEncryptData(createEccRequestBody);
         response = request.body(finalRequestBody).post();
         originalResponseBody = response.as(OriginalResponseBody.class);
         originalDataValue = originalResponseBody.data;
         CreateEccResponseBody createEccResponseBody = BaseTest.getBodyDecrypt(KeyContainer.PRIVATE_KEY, KeyContainer.PASS_CODE, originalDataValue, CreateEccResponseBody.class);
-        ecc = createEccResponseBody.succList.get(0).ecollectionCd;
+        RequestCapability.originalEcc = createEccResponseBody.succList.get(0).ecollectionCd;
+        RequestCapability.cuttedPrefixEcc = originalEcc.replace("HHHHH", "");
 
         System.out.println("Create Ecc Response: " + new Gson().toJson(createEccResponseBody));
 
@@ -124,12 +120,11 @@ public class CreateReceivableScenario extends BaseTest {
     @Test
     public void TC_06_CreateReceivable() throws PGPException, IOException {
         request = RequestHeaderGenerator.getCustomRequestHeader(BasePathList.CREATE_RECEIVABLE, accessToken);
-        CreateEcReceivableRequestBody createEcReceivableRequest = RequestBodyGenerator.getCreateEcReceivableRequest(payerNo, ecc);
+        CreateEcReceivableRequestBody createEcReceivableRequest = RequestBodyGenerator.getCreateEcReceivableRequest(payerNo, RequestCapability.originalEcc);
 
         System.out.println("Create Ec Receivable Request: " + new Gson().toJson(createEcReceivableRequest));
 
-        String encryptedCreateEcReceivableBody = BaseTest.getEncryptData(createEcReceivableRequest, KeyContainer.PUBLIC_KEY);
-        finalRequestBody = RequestBodyGenerator.getFinalRequestBody(encryptedCreateEcReceivableBody);
+        finalRequestBody = BaseTest.getEncryptData(createEcReceivableRequest);
         response = request.body(finalRequestBody).post();
         originalResponseBody = response.as(OriginalResponseBody.class);
         originalDataValue = originalResponseBody.data;

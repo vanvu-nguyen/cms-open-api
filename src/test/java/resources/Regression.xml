@@ -4,6 +4,7 @@
     <test name="CMS-OPEN-API" >
         <classes>
             <class name="test.CreateReceivableScenario" />
+            <class name="test.GetBillAndPayBillScenario" />
         </classes>
     </test>
 </suite>
