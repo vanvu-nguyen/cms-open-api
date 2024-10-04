@@ -1,10 +1,7 @@
 package Commons;
 
 import PGPHandler.AuthUtils;
-import com.github.javafaker.Faker;
 import io.restassured.http.Header;
-
-import java.util.Locale;
 
 public class RequestCapability {
 
@@ -17,18 +14,19 @@ public class RequestCapability {
     }
     public static final Header BANK_CODE = new Header("bankCode", "01202001");
     public static final Header CONTENT_TYPE = new Header("Content-Type", "application/json; charset=UTF-8");
-    public static Header getTokenHeader(String accessToken) {
-        return new Header("token", accessToken);
+    public static Header getOpenAPITokenHeader() {
+        return new Header("token", openAPIAccessToken);
     }
+
+    public static Header getEngineTokenHeader() {
+        return new Header("token", engineAccessToken);
+    }
+
     public static final Header REQUEST_ID = new Header("requestid", "test1234");
 
-    public static String originalEcc;
-    public static String cuttedPrefixEcc;
+    public static String openAPIAccessToken;
+    public static int openAPIRefreshIdx;
     public static String engineAccessToken;
-    public static String billId;
 
-    public static String transId = String.valueOf(new Faker(new Locale("en_US")).number().randomNumber(7, true));
-    public static final String TRANS_DATE = "19910415083000";
-    public static String refNum = "A" + String.valueOf(new Faker(new Locale("en_US")).number().randomNumber(7, true));
 
 }

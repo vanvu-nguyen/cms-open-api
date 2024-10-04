@@ -1,6 +1,6 @@
 package PGPHandler;
 
-import Commons.RequestCapability;
+import Commons.SampleData;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -11,8 +11,11 @@ public class ChecksumGenerator {
 
     private static final String SECRET_KEY = "7476576532692068";
 
-    public static String getLoginChecksum(String userId, String password) {
+    public static String getLoginChecksum() {
         try {
+            String userId = SampleData.ENGINE_USER_ID;
+            String password = SampleData.ENGINE_PASSWORD;
+
             // Decode Base64 userId and password
             String decUserId = new String(Base64.getDecoder().decode(userId), StandardCharsets.UTF_8);
             String decPassword = new String(Base64.getDecoder().decode(password), StandardCharsets.UTF_8);
@@ -35,12 +38,12 @@ public class ChecksumGenerator {
         }
     }
 
-    public static String getGetbillChecksum(String customerId) {
+    public static String getGetbillChecksum() {
         try {
-
-            String requestId = "test1234";
-            String serviceId = "huych";
-            String channel = "E";
+            String customerId = SampleData.cuttedPrefixEcc;
+            String requestId = SampleData.requestId;
+            String serviceId = SampleData.serviceId;
+            String channel = SampleData.channel;
 
             // Combine userId, password, and secret key
             String sourceData = requestId + "|" + customerId + "|" + serviceId + "|" + channel + "|" + SECRET_KEY;
@@ -63,15 +66,15 @@ public class ChecksumGenerator {
     public static String getPaybillChecksum() {
         try {
 
-            String requestId = "test1234";
-            String transId = RequestCapability.transId;
-            String transDate = RequestCapability.TRANS_DATE;
-            String customerId = RequestCapability.cuttedPrefixEcc;
-            String serviceId = "huych";
-            String channel = "E";
-            String billId = RequestCapability.billId;
-            int amount = 5000;
-            String refNum = RequestCapability.refNum;
+            String requestId = SampleData.requestId;
+            String transId = SampleData.transId;
+            String transDate = SampleData.transDate;
+            String customerId = SampleData.cuttedPrefixEcc;
+            String serviceId = SampleData.serviceId;
+            String channel = SampleData.channel;
+            String billId = SampleData.billId;
+            int amount = SampleData.payAmount;
+            String refNum = SampleData.refNum;
 
             // Combine userId, password, and secret key
             String sourceData = requestId + "|" + transId + "|" + transDate + "|" + customerId + "|" + serviceId

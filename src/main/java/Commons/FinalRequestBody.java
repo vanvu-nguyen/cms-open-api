@@ -3,8 +3,8 @@ package Commons;
 public class FinalRequestBody {
 
     public String data;
-    public FinalRequestBody() {
-        this.data = SampleData.encryptedBody;
+    public FinalRequestBody(String encryptedBody) {
+        this.data = encryptedBody;
     }
 
 }

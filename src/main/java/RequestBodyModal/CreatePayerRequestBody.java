@@ -1,10 +1,9 @@
 package RequestBodyModal;
 
-import com.github.javafaker.Faker;
+import Commons.SampleData;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 public class CreatePayerRequestBody {
 
@@ -18,12 +17,12 @@ public class CreatePayerRequestBody {
     public class Data {
 
         public String payerNo = "";
-        public String payerName = String.valueOf(new Faker(new Locale("en_US")).team().name());
-        public String phoneNo = "03" + new Faker(new Locale("en_US")).number().randomNumber(8, true);
-        public String smsUseYn = "Y";
-        public String zaloUseYn = "Y";
+        public String payerName = SampleData.payerName;
+        public String phoneNo = SampleData.phoneNo;
+        public String smsUseYn = SampleData.smsUse;
+        public String zaloUseYn = SampleData.zaloUse;
         public String email = "";
-        public String remark = "VK marked";
+        public String remark = SampleData.remark;
 
     }
 }

@@ -1,23 +1,22 @@
 package RequestBodyModal;
 
+import Commons.SampleData;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class CreateEccRequestBody {
 
     public List<Data> data;
-    public CreateEccRequestBody(String payerNo) {
+    public CreateEccRequestBody() {
         this.data = new ArrayList<>();
-        this.data.add(new Data(payerNo));
+        this.data.add(new Data());
     }
 
-    public class Data{
-        public String motherAccntNo = "7834444422344";
-        public String ecollectionCdName = "VK holder name";
-        public String payerNo;
-
-        public Data(String payerNo) {
-            this.payerNo = payerNo;
-        }
+    public static class Data {
+        public String motherAccntNo = SampleData.motherAccntNo;
+        public String ecollectionCdName = SampleData.ecollectionCdName;
+        public String payerNo = SampleData.payerNo;
     }
+
 }

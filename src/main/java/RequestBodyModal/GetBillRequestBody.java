@@ -1,6 +1,6 @@
 package RequestBodyModal;
 
-import Commons.RequestCapability;
+import Commons.SampleData;
 import PGPHandler.ChecksumGenerator;
 
 public class GetBillRequestBody {
@@ -10,9 +10,9 @@ public class GetBillRequestBody {
     public String checksum;
 
     public GetBillRequestBody() {
-        this.customerId = RequestCapability.cuttedPrefixEcc;
-        this.serviceId = "huych";
-        this.channel = "E";
-        this.checksum = ChecksumGenerator.getGetbillChecksum(RequestCapability.cuttedPrefixEcc);
+        this.customerId = SampleData.cuttedPrefixEcc;
+        this.serviceId = SampleData.serviceId;
+        this.channel = SampleData.channel;
+        this.checksum = ChecksumGenerator.getGetbillChecksum();
     }
 }

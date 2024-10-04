@@ -3,8 +3,8 @@ package Commons;
 import RequestBodyModal.*;
 
 public class RequestBodyGenerator {
-    public static FinalRequestBody getFinalRequestBody() {
-        return new FinalRequestBody();
+    public static FinalRequestBody getFinalRequestBody(String encryptedBody) {
+        return new FinalRequestBody(encryptedBody);
     }
     public static LoginRequestBody getLoginRequestBody() {
         return new LoginRequestBody();
@@ -12,11 +12,11 @@ public class RequestBodyGenerator {
     public static CreatePayerRequestBody getCreatePayerRequestBody() {
         return new CreatePayerRequestBody();
     }
-    public static CreateEccRequestBody getCreateEccRequestBody(String payerNo) {
-        return new CreateEccRequestBody(payerNo);
+    public static CreateEccRequestBody getCreateEccRequestBody() {
+        return new CreateEccRequestBody();
     }
-    public static CreateEcReceivableRequestBody getCreateEcReceivableRequest(String payerNo, String ecc) {
-        return new CreateEcReceivableRequestBody(payerNo, ecc);
+    public static CreateEcReceivableRequestBody getCreateEcReceivableRequest() {
+        return new CreateEcReceivableRequestBody();
     }
     public static LoginEngineRequestBody getLoginEngineRequestBody() {
         return new LoginEngineRequestBody();

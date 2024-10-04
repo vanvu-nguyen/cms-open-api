@@ -1,6 +1,6 @@
 package RequestBodyModal;
 
-import Commons.RequestCapability;
+import Commons.SampleData;
 import PGPHandler.ChecksumGenerator;
 
 public class PayBillRequestBody {
@@ -15,14 +15,14 @@ public class PayBillRequestBody {
     public String checksum;
 
     public PayBillRequestBody() {
-        this.transId = RequestCapability.transId;
-        this.transDate = "19910415083000";
-        this.customerId = RequestCapability.cuttedPrefixEcc;
-        this.serviceId = "huych";
-        this.channel = "E";
-        this.billId = RequestCapability.billId;
-        this.amount = 5000;
-        this.refNum = RequestCapability.refNum;
+        this.transId = SampleData.transId;
+        this.transDate = SampleData.transDate;
+        this.customerId = SampleData.cuttedPrefixEcc;
+        this.serviceId = SampleData.serviceId;
+        this.channel = SampleData.channel;
+        this.billId = SampleData.billId;
+        this.amount = SampleData.payAmount;
+        this.refNum = SampleData.refNum;
         this.checksum = ChecksumGenerator.getPaybillChecksum();
     }
 }

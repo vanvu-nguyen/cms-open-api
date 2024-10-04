@@ -17,11 +17,11 @@ public class RequestHeaderGenerator {
         return request;
     }
 
-    public static RequestSpecification getCustomRequestHeader(String basePath, String accessToken) {
+    public static RequestSpecification getOpenAPICustomRequestHeader(String basePath) {
         RequestSpecification request = given();
         request.baseUri(RequestCapability.OPEN_API_BASE_URL);
         request.basePath(basePath);
-        request.header(RequestCapability.getTokenHeader(accessToken));
+        request.header(RequestCapability.getOpenAPITokenHeader());
         request.header(RequestCapability.CONTENT_TYPE);
         request.header(RequestCapability.AUTHORIZATION_HEADER_PARAMETERS);
         request.header(RequestCapability.BANK_CODE);
@@ -40,7 +40,7 @@ public class RequestHeaderGenerator {
         RequestSpecification request = given();
         request.baseUri(RequestCapability.ENGINE_BASE_URL);
         request.basePath(BasePathList.GET_BILL);
-        request.header(RequestCapability.getTokenHeader(RequestCapability.engineAccessToken));
+        request.header(RequestCapability.getEngineTokenHeader());
         request.header(RequestCapability.REQUEST_ID);
         request.header(RequestCapability.CONTENT_TYPE);
         return request;
@@ -50,7 +50,7 @@ public class RequestHeaderGenerator {
         RequestSpecification request = given();
         request.baseUri(RequestCapability.ENGINE_BASE_URL);
         request.basePath(BasePathList.PAY_BILL);
-        request.header(RequestCapability.getTokenHeader(RequestCapability.engineAccessToken));
+        request.header(RequestCapability.getEngineTokenHeader());
         request.header(RequestCapability.REQUEST_ID);
         request.header(RequestCapability.CONTENT_TYPE);
         return request;

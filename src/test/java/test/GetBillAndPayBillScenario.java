@@ -3,12 +3,12 @@ package test;
 import Commons.RequestBodyGenerator;
 import Commons.RequestCapability;
 import Commons.RequestHeaderGenerator;
+import Commons.SampleData;
 import RequestBodyModal.GetBillRequestBody;
 import RequestBodyModal.LoginEngineRequestBody;
 import RequestBodyModal.PayBillRequestBody;
 import ResponseBodyModal.GetBillSuccessResponseBody;
 import ResponseBodyModal.LoginEngineSuccessResponseBody;
-import ResponseBodyModal.PayBillResponseBody;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import jdbcTest.MariaDBConnUtils;
@@ -42,7 +42,7 @@ public class GetBillAndPayBillScenario {
         response = request.body(getBillRequestBody).post();
         response.prettyPrint();
         GetBillSuccessResponseBody getBillSuccessResponseBody = response.as(GetBillSuccessResponseBody.class);
-        RequestCapability.billId = getBillSuccessResponseBody.data.get(0).billId;
+        SampleData.billId = getBillSuccessResponseBody.data.get(0).billId;
     }
 
     @Test
@@ -51,7 +51,6 @@ public class GetBillAndPayBillScenario {
         request = RequestHeaderGenerator.getPaybillRequestHeader();
         response = request.body(payBillRequestBody).post();
         response.prettyPrint();
-        PayBillResponseBody payBillResponseBody = response.as(PayBillResponseBody.class);
     }
 
     @Test
@@ -59,10 +58,11 @@ public class GetBillAndPayBillScenario {
         Connection connection = MariaDBConnUtils.getMariaDBConnection();
         String queryingString = "SELECT * FROM TB_ECOLLECTION_TRANS WHERE BILL_ID = ?";
         PreparedStatement pstm = connection.prepareStatement(queryingString);
-        pstm.setString(1, RequestCapability.billId);
+        pstm.setString(1, SampleData.billId);
+        System.out.println(SampleData.billId);
         ResultSet resultSet = pstm.executeQuery();
         while (resultSet.next()) {
-            Assert.assertEquals(5000, resultSet.getInt("DEPOSIT_AMT"));
+            Assert.assertEquals(SampleData.payAmount, resultSet.getInt("DEPOSIT_AMT"));
         }
     }
 }

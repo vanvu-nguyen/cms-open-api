@@ -1,31 +1,29 @@
 package RequestBodyModal;
 
+import Commons.SampleData;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class CreateEcReceivableRequestBody {
     public List<Data> data;
-    public CreateEcReceivableRequestBody(String payerNo, String ecc) {
+    public CreateEcReceivableRequestBody() {
         this.data = new ArrayList<>();
-        this.data.add(new Data(payerNo, ecc));
+        this.data.add(new Data());
     }
 
     public class Data{
-        public String motherAccntNo = "7834444422344";
-        public String payerNo;
-        public String ecollectionCd;
-        public String ecollectionCdHdNm = "";
-        public String restrictionType = "0";
-        public int depositAmt = 200000;
-        public String payableStartDt = "20241205";
-        public String payableEndDt = "20241207";
+        public String motherAccntNo = SampleData.motherAccntNo;
+        public String payerNo = SampleData.payerNo;
+        public String ecollectionCd = SampleData.originalEcc;
+        public String ecollectionCdHdNm = SampleData.ecollectionCdName;
+        public String restrictionType = SampleData.restrictionType;
+        public int depositAmt = SampleData.depositAmt;
+        public String payableStartDt = SampleData.payableStartDt;
+        public String payableEndDt = SampleData.payableEndDt;
         public String payableStartTm = "";
         public String payableEndTm = "";
-        public String payDtTmCd = "0";
+        public String payDtTmCd = SampleData.payDtTmCd;
 
-        public Data(String payerNo, String ecc) {
-            this.payerNo = payerNo;
-            this.ecollectionCd = ecc;
-        }
     }
 }

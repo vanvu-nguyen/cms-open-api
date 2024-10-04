@@ -1,14 +1,16 @@
 package jdbcTest;
 
+import Commons.SampleData;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 
 public class MariaDBConnUtils {
     public static Connection getMariaDBConnection() {
-        String hostName = "10.100.116.40";
-        String dbName = "infocms_bidv";
-        String userName = "infocms_ba_user";
-        String password = "Inf0#Cm$2050P@";
+        String hostName = SampleData.DB_HOST_NAME;
+        String dbName = SampleData.DB_NAME;
+        String userName = SampleData.DB_USER_NAME;
+        String password = SampleData.DB_PASSWORD;
         return getMariaDBConnection(hostName,dbName, userName, password);
     }
     private static Connection getMariaDBConnection(String hostName, String dbName, String userName, String password) {

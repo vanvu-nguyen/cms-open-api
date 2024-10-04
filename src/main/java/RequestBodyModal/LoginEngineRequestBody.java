@@ -1,5 +1,6 @@
 package RequestBodyModal;
 
+import Commons.SampleData;
 import PGPHandler.ChecksumGenerator;
 
 public class LoginEngineRequestBody {
@@ -8,8 +9,8 @@ public class LoginEngineRequestBody {
     public String checksum;
 
     public LoginEngineRequestBody() {
-        this.userId = "Ymlkdl90ZXN0";
-        this.password = "MTIzNDU2NzhAMzQ1QXM=";
-        this.checksum = ChecksumGenerator.getLoginChecksum("Ymlkdl90ZXN0", "MTIzNDU2NzhAMzQ1QXM=");
+        this.userId = SampleData.ENGINE_USER_ID;
+        this.password = SampleData.ENGINE_PASSWORD;
+        this.checksum = ChecksumGenerator.getLoginChecksum();
     }
 }
