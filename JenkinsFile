@@ -1,0 +1,19 @@
+node {
+    ansiColor('xterm') {
+    }
+    
+    timestamps {
+    }
+    
+    stage('1 - Get code') {
+        git 'https://github.com/vanvu-nguyen/maven-cms-bidv'
+    }
+    
+    stage('2 - Compile') {
+        bat 'mvn clean'
+    }
+    
+    stage('3 - Run E2E') {
+        bat 'mvn test'
+    }
+}

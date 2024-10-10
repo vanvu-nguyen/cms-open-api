@@ -1,6 +1,6 @@
 package test;
 
-import BasePath.BasePathList;
+import BasePath.PathList;
 import Commons.*;
 import RequestBodyModal.CreateEcReceivableRequestBody;
 import RequestBodyModal.CreateEccRequestBody;
@@ -31,9 +31,8 @@ public class CreateReceivableScenario extends BaseTest {
     private Response response;
     String originalDataValue;
 
-
     @Test
-    public void TC_01_LogIn() throws Exception {
+    public void TC_01_LogInToOpenAPI() throws Exception {
         LoginRequestBody loginRequestBody = RequestBodyGenerator.getLoginRequestBody();
         String encryptedBody = BaseTest.getEncryptData(loginRequestBody);
         finalRequestBody = RequestBodyGenerator.getFinalRequestBody(encryptedBody);
@@ -53,7 +52,7 @@ public class CreateReceivableScenario extends BaseTest {
 
         String encryptedBody = BaseTest.getEncryptData(createPayerRequestBody);
         finalRequestBody = RequestBodyGenerator.getFinalRequestBody(encryptedBody);
-        request = RequestHeaderGenerator.getOpenAPICustomRequestHeader(BasePathList.CREATE_PAYER);
+        request = RequestHeaderGenerator.getOpenAPICustomRequestHeader(PathList.CREATE_PAYER);
         response = request.body(finalRequestBody).post();
         originalDataValue = response.as(OriginalResponseBody.class).data;
         CreatePayerResponseBody createPayerResponseBody = BaseTest.getBodyDecrypt(originalDataValue, CreatePayerResponseBody.class);
@@ -82,7 +81,7 @@ public class CreateReceivableScenario extends BaseTest {
 
     @Test
     public void TC_04_CreateEccThenMapToPayer() throws PGPException, IOException {
-        request = RequestHeaderGenerator.getOpenAPICustomRequestHeader(BasePathList.CREATE_ECC);
+        request = RequestHeaderGenerator.getOpenAPICustomRequestHeader(PathList.CREATE_ECC);
         CreateEccRequestBody createEccRequestBody = RequestBodyGenerator.getCreateEccRequestBody();
 
         System.out.println("Create Ecc Request: " + new Gson().toJson(createEccRequestBody));
@@ -106,7 +105,7 @@ public class CreateReceivableScenario extends BaseTest {
 
     @Test
     public void TC_05_CreateReceivable() throws PGPException, IOException {
-        request = RequestHeaderGenerator.getOpenAPICustomRequestHeader(BasePathList.CREATE_RECEIVABLE);
+        request = RequestHeaderGenerator.getOpenAPICustomRequestHeader(PathList.CREATE_RECEIVABLE);
         CreateEcReceivableRequestBody createEcReceivableRequest = RequestBodyGenerator.getCreateEcReceivableRequest();
 
         System.out.println("Create Ec Receivable Request: " + new Gson().toJson(createEcReceivableRequest));

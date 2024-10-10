@@ -1,6 +1,6 @@
 package BasePath;
 
-public class BasePathList {
+public class PathList {
     public static final String OPEN_API_LOGIN = "/ocms/v1/auth/login";
     public static final String REFRESH = "/ocms/v1/auth/refresh";
     public static final String ENGINE_LOGIN = "/bidv-infocms/auth/v1/login";
