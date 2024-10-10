@@ -2,6 +2,7 @@ package test;
 
 import BasePath.PathList;
 import Commons.*;
+import ReportConfig.ExtentTestManager;
 import RequestBodyModal.CreateEcReceivableRequestBody;
 import RequestBodyModal.CreateEccRequestBody;
 import RequestBodyModal.CreatePayerRequestBody;
@@ -19,6 +20,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -32,7 +34,8 @@ public class CreateReceivableScenario extends BaseTest {
     String originalDataValue;
 
     @Test
-    public void TC_01_LogInToOpenAPI() throws Exception {
+    public void TC_01_LogInToOpenAPI(Method method) throws Exception {
+        ExtentTestManager.startTest(method.getName(), "LogInToOpenAPI");
         LoginRequestBody loginRequestBody = RequestBodyGenerator.getLoginRequestBody();
         String encryptedBody = BaseTest.getEncryptData(loginRequestBody);
         finalRequestBody = RequestBodyGenerator.getFinalRequestBody(encryptedBody);
@@ -45,7 +48,8 @@ public class CreateReceivableScenario extends BaseTest {
     }
 
     @Test
-    public void TC_02_CreatePayer() throws PGPException, IOException {
+    public void TC_02_CreatePayer(Method method) throws PGPException, IOException {
+        ExtentTestManager.startTest(method.getName(), "LogInToOpenAPI");
         CreatePayerRequestBody createPayerRequestBody = RequestBodyGenerator.getCreatePayerRequestBody();
 
         System.out.println("Create Payer Request: " + new Gson().toJson(createPayerRequestBody));
