@@ -14,7 +14,7 @@ import ResponseBodyModal.LoginResponseBody;
 import com.google.gson.Gson;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
-import jdbcTest.MariaDBConnUtils;
+import JDBCTest.MariaDBConnUtils;
 import org.bouncycastle.openpgp.PGPException;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -49,7 +49,7 @@ public class CreateReceivableScenario extends BaseTest {
 
     @Test
     public void TC_02_CreatePayer(Method method) throws PGPException, IOException {
-        ExtentTestManager.startTest(method.getName(), "LogInToOpenAPI");
+        ExtentTestManager.startTest(method.getName(), "CreatePayer");
         CreatePayerRequestBody createPayerRequestBody = RequestBodyGenerator.getCreatePayerRequestBody();
 
         System.out.println("Create Payer Request: " + new Gson().toJson(createPayerRequestBody));
@@ -71,7 +71,8 @@ public class CreateReceivableScenario extends BaseTest {
     }
 
     @Test
-    public void TC_03_VerifyDatabase() throws SQLException {
+    public void TC_03_VerifyDatabase(Method method) throws SQLException {
+        ExtentTestManager.startTest(method.getName(), "VerifyDatabase");
         Connection connection = MariaDBConnUtils.getMariaDBConnection();
         String queryingString = "SELECT * FROM TB_PAYER WHERE TEL_NO = ?";
         PreparedStatement pstm = connection.prepareStatement(queryingString);
@@ -84,7 +85,8 @@ public class CreateReceivableScenario extends BaseTest {
     }
 
     @Test
-    public void TC_04_CreateEccThenMapToPayer() throws PGPException, IOException {
+    public void TC_04_CreateEccThenMapToPayer(Method method) throws PGPException, IOException {
+        ExtentTestManager.startTest(method.getName(), "CreateEccThenMapToPayer");
         request = RequestHeaderGenerator.getOpenAPICustomRequestHeader(PathList.CREATE_ECC);
         CreateEccRequestBody createEccRequestBody = RequestBodyGenerator.getCreateEccRequestBody();
 
@@ -108,7 +110,8 @@ public class CreateReceivableScenario extends BaseTest {
     }
 
     @Test
-    public void TC_05_CreateReceivable() throws PGPException, IOException {
+    public void TC_05_CreateReceivable(Method method) throws PGPException, IOException {
+        ExtentTestManager.startTest(method.getName(), "CreateReceivable");
         request = RequestHeaderGenerator.getOpenAPICustomRequestHeader(PathList.CREATE_RECEIVABLE);
         CreateEcReceivableRequestBody createEcReceivableRequest = RequestBodyGenerator.getCreateEcReceivableRequest();
 

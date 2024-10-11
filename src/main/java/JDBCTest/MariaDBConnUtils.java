@@ -1,4 +1,4 @@
-package jdbcTest;
+package JDBCTest;
 
 import Commons.SampleData;
 

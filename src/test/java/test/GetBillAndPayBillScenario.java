@@ -4,6 +4,7 @@ import Commons.RequestBodyGenerator;
 import Commons.RequestCapability;
 import Commons.RequestHeaderGenerator;
 import Commons.SampleData;
+import ReportConfig.ExtentTestManager;
 import RequestBodyModal.GetBillRequestBody;
 import RequestBodyModal.LoginEngineRequestBody;
 import RequestBodyModal.PayBillRequestBody;
@@ -11,10 +12,11 @@ import ResponseBodyModal.GetBillSuccessResponseBody;
 import ResponseBodyModal.LoginEngineSuccessResponseBody;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
-import jdbcTest.MariaDBConnUtils;
+import JDBCTest.MariaDBConnUtils;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -26,7 +28,8 @@ public class GetBillAndPayBillScenario {
     private Response response;
 
     @Test
-    public void TC_01_LogInToEngine() {
+    public void TC_01_LogInToEngine(Method method) {
+        ExtentTestManager.startTest(method.getName(), "LogInToEngine");
         LoginEngineRequestBody loginEngineRequestBody = RequestBodyGenerator.getLoginEngineRequestBody();
         request = RequestHeaderGenerator.getEngineLoginRequestHeader();
         response = request.body(loginEngineRequestBody).post();
@@ -36,7 +39,8 @@ public class GetBillAndPayBillScenario {
     }
 
     @Test
-    public void TC_02_GetBill() {
+    public void TC_02_GetBill(Method method) {
+        ExtentTestManager.startTest(method.getName(), "GetBill");
         GetBillRequestBody getBillRequestBody = RequestBodyGenerator.getGetBillRequestBody();
         request = RequestHeaderGenerator.getGetbillRequestHeader();
         response = request.body(getBillRequestBody).post();
@@ -46,7 +50,8 @@ public class GetBillAndPayBillScenario {
     }
 
     @Test
-    public void TC_03_PayBill() {
+    public void TC_03_PayBill(Method method) {
+        ExtentTestManager.startTest(method.getName(), "PayBill");
         PayBillRequestBody payBillRequestBody = RequestBodyGenerator.getPayBillRequestBody();
         request = RequestHeaderGenerator.getPaybillRequestHeader();
         response = request.body(payBillRequestBody).post();
@@ -54,7 +59,8 @@ public class GetBillAndPayBillScenario {
     }
 
     @Test
-    public void TC_04_VerifyTransactionInDatabase() throws SQLException {
+    public void TC_04_VerifyTransactionInDatabase(Method method) throws SQLException {
+        ExtentTestManager.startTest(method.getName(), "VerifyTransactionInDatabase");
         Connection connection = MariaDBConnUtils.getMariaDBConnection();
         String queryingString = "SELECT * FROM TB_ECOLLECTION_TRANS WHERE BILL_ID = ?";
         PreparedStatement pstm = connection.prepareStatement(queryingString);
