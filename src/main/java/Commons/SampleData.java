@@ -18,7 +18,7 @@ public class SampleData {
 
     // Engine Bank credential
     public static String ENGINE_USER_ID = "Ymlkdl90ZXN0";
-    public static String ENGINE_PASSWORD = "MTIzNDU2NzhAMzQ1QXM=";
+    public static String ENGINE_PASSWORD = "MTIzNDU=";
 
     // Open API test data
     public static String payerNo;
